@@ -1,0 +1,67 @@
+from pymongo import MongoClient, TEXT
+from load_dotenv import load_dotenv
+import os
+import json
+
+load_dotenv()  # Load environment variables from .env file
+
+# Initialize MongoDB
+client = MongoClient(os.getenv("atlas_mongodb_uri"))
+db = client['spiritual_hymns']
+collection = db['lord_muruga']
+
+old_data =[
+{"instruction": "Suggest a foundational prayer for divine presence and mental focus.", "input": "I want to feel protected and guided in every thought I have today.", "output": "Verse: 'திருத்தணியில் உதித்(து) அருளும் ஒருத்தன்மலை விருத்தன்என(து) உளத்தில்உறை கருத்தன்மயில் நடத்துகுகன் வேலே'.", "context": "This verse establishes Lord Murugan as the inner resident of your heart.", "layman story": "Imagine a King who leaves his mountain palace to sit inside your heart, taking the driver's seat of your life to ensure you never go off track.", "inner transformation": "Moving from 'I am alone' to 'He is within,' converting your scattered thoughts into a graceful, focused dance.", "benefit": "Mental peace and anchoring in the Divine presence.", "number of times to recite": "12 times daily"},
+{"instruction": "Recommend a verse for overcoming internal enemies like lust and ego.", "input": "I am struggling with my own desires and internal conflicts that cloud my judgment.", "output": "Verse: 'பருத்த முலை சிறுத்த இடை வெளுத்தநகை கறுத்தகுழல் சிவத்த இதழ் மறச்சிறுமி விழிக்குநிகர் ஆகும்'.", "context": "Compares the sharpness of the Vel to the sharp eyes of Valli.", "layman story": "Just as a hunter's gaze is fixed solely on the target, the Vel pierces through the glamour of the world that distracts us.", "inner transformation": "Shattering 'Maya' or illusion, allowing the mind to see the eternal truth behind temporary appearances.", "benefit": "Control over senses and victory over base desires.", "number of times to recite": "27 times daily"},
+{"instruction": "Which verse helps in destroying external competition and enmity?", "input": "I am facing people who are actively working against me and trying to bring me down.", "output": "Verse: 'சொலற்(கு)அரிய திருப்புகழை உரைத்தவரை அடுத்தபகை அறுத்(து)எறிய உறுக்கிஎழு(ம்)மறத்தை நிலை காணும்'.", "context": "The Vel arises to destroy the enemies of those who chant Thirupugazh.", "layman story": "Imagine an invisible bodyguard that steps forward the moment someone tries to harm you, neutralizing their malice.", "inner transformation": "Building a vibrational fortress where external negativity simply cannot resonate.", "benefit": "Protection from rivals and resolution of conflicts.", "number of times to recite": "36 times daily"},
+{"instruction": "Suggest a verse for protection against the fear of death or severe illness.", "input": "I feel anxious about my mortality and need strength to face a life-threatening situation.", "output": "Verse: 'தருக்கிநமன் முருக்கவரின் எருக்குமதி தரித்தமுடி படைத்தவிறல் படைக்க இறை கழற்குநிகழ் ஆகும்'.", "context": "Invokes the Vel's power to stand equal to Shiva's feet against the God of Death.", "layman story": "When the Messenger of Death comes, he sees the Vel standing guard and realizes he has no authority here.", "inner transformation": "Transitioning from the fear of the body's end to the realization of the Soul's immortality.", "benefit": "Removal of the fear of death (Mrityu Bhaya) and longevity.", "number of times to recite": "108 times daily"},
+{"instruction": "Recommend a verse for breaking free from the chains of past karma.", "input": "I feel trapped by my past mistakes and life feels like a constant cycle of suffering.", "output": "Verse: 'பனைக்கைமுக படக்கரட மதத்தவன கசக்கடவுள் பதத்(து) இடு(ம்)நி களத்துமுளை தெறிக்கவரம் ஆகும்'.", "context": "Describes Ganesha and Murugan snapping the iron chains (Nigalam) of Karma.", "layman story": "Imagine you are dragging heavy rusty chains; Ganesha stomps his foot and the pins fly off, leaving you free to run.", "inner transformation": "Breaking the 'Brahma Granthi' (the base knot), releasing you from ancestral patterns.", "benefit": "Dissolution of past karmic debts and obstacles.", "number of times to recite": "21 times daily"},
+{"instruction": "Which verse provides protection in a chaotic or hostile environment?", "input": "I am in the middle of a conflict and feel surrounded by chaos and aggression.", "output": "Verse: 'சினத்(து) அவுணர் எதிர்த்தரண களத்தில் வெகு குறைத்தலைகள் சிரித்(து)எயிறு கடித்துவிழி விழித்(து) அலற மோதும்'.", "context": "Visualizes the Vel's dominance on the battlefield.", "layman story": "In a room full of shouting, the Vel acts like a sudden silence that humbles the aggressors.", "inner transformation": "Cultivating spiritual warrior energy that remains calm and victorious amidst turmoil.", "benefit": "Fearlessness and protection during times of war or riots.", "number of times to recite": "12 times daily"},
+{"instruction": "Suggest a verse for protection against those plotting to harm my family.", "input": "I am worried that someone is thinking of ways to ruin my family's reputation and peace.", "output": "Verse: 'துதிக்கும் அடியவர்க்(கு) ஒருவர் கெடுக்க இடம் நினைக்கின் அவர் குலத்தைமுதல் அறக்களையும் எனக்(கு) ஓர்துணை ஆகும்'.", "context": "A powerful shield against those who even think of harm.", "layman story": "It is like a security system that detects an intruder's intentions before they even reach your gate.", "inner transformation": "Moving from vulnerability to Divine Sovereignty where your peace is untouchable.", "benefit": "Protection of lineage (Kuladeivam protection) and social status.", "number of times to recite": "108 times (for severe threats)"},
+{"instruction": "Recommend a verse for material abundance and the fulfillment of basic needs.", "input": "I am praying for prosperity and for my efforts to bear fruit in this world.", "output": "Verse: 'தலத்தில்உள கணத்தொகுதி களிப்பின் உணவழைப்ப(து) என மலர்க்கமல கரத்தின்முனை விதிர்க்க வளை(வு) ஆகும்'.", "context": "Describes the Vel as a provider beckoning joy.", "layman story": "Imagine a mother calling her children to a feast; the Vel calls all resources to serve your needs.", "inner transformation": "Shifting from a scarcity mindset to trust in the universe's infinite supply.", "benefit": "Financial stability and success in career/business.", "number of times to recite": "27 times daily"},
+{"instruction": "Which verse helps in overcoming obstacles and finding a way out of a dead-end?", "input": "I feel like I am stuck in a cave with no exit; I need a breakthrough.", "output": "Verse: 'பழுத்தமுது தமிழ்ப்பலகை இருக்கும் ஒரு கவிப்புலவன் இசைக்(கு)உருகி வரக்குகையை இடித்துவழி காணும்'.", "context": "References the Vel breaking through mountains for a poet.", "layman story": "Standing before a solid stone wall, the Vel acts like a laser that carves a doorway through the rock.", "inner transformation": "Breaking through 'Tamoguna' (inertia), allowing the light of intelligence to solve problems.", "benefit": "Breakthrough in stalled projects and clarity in decisions.", "number of times to recite": "16 times daily"},
+{"instruction": "Suggest a verse for achieving high speed and efficiency in a project.", "input": "I need the energy and speed to complete a massive task that seems impossible.", "output": "Verse: 'திசைக்கிரியை முதற்குலிசன் அறுத்துசிறை முளைத்த(து)என முகட்டினிடை பறக்கஅற விசைத்(து) அதிர ஓடும்'.", "context": "Describes the Vel's incredible speed across all directions.", "layman story": "Like a rocket that cuts through the atmosphere, the Vel gives you the momentum to finish work swiftly.", "inner transformation": "Activating the Vayu (Air) element, resulting in swift execution and tireless energy.", "benefit": "Rapid progress and removal of procrastination.", "number of times to recite": "12 times daily"},
+{"instruction": "Recommend a verse for mental clarity when feeling 'in the dark'.", "input": "My mind is clouded, and I cannot see the truth of the situation.", "output": "Verse: 'சுடர்ப்பரிதி ஒளிப்பநில(வு) ஒழுக்கு(ம்)மதி ஒளிப்பஅலை அடக்குதழல் ஒளிப்பஒளிர் ஒளிப்பிரபை வீசும்'.", "context": "Describes the Vel as a light more radiant than the sun and moon.", "layman story": "It is like turning on high-beam headlights in a fog; suddenly every obstacle is visible.", "inner transformation": "Illuminating the Third Eye (Ajna Chakra), allowing you to see through deceptions.", "benefit": "Clarity of thought and spiritual enlightenment.", "number of times to recite": "21 times daily"},
+{"instruction": "Suggest a verse for safety during solo travel or night journeys.", "input": "I am traveling alone at night and feel vulnerable to external threats.", "output": "Verse: 'தனித்துவழி நடக்கும் என(து) இடத்தும் ஒரு வலத்தும் இரு புறத்தும் அரு(கு)அடுத்(து)இரவு பகற்றுணைய(து)ஆகும்'.", "context": "The primary verse for travel protection.", "layman story": "You are never alone; the Vel walks as your shadow on the left and protector on the right.", "inner transformation": "Overcoming the primal fear of the unknown, replaced by a sense of being eternally accompanied.", "benefit": "Safety from accidents and physical harm during travel.", "number of times to recite": "3 or 12 times before starting journey"},
+{"instruction": "Which verse helps in overcoming deep-seated poverty or lack of resources?", "input": "I am struggling with deep lack and feel like my energy is being drained.", "output": "Verse: 'பசித்(து)அலகை முசித்(து)அழுது முறைப்படுதல் ஒழித்(து)அவுணர் உரத்(து)உதிர நிணத்தசைகள் புசிக்க அருள்நேரும்'.", "context": "Symbolizes the Vel destroying the demons of hunger and lack.", "layman story": "The Vel identifies the 'parasites' in your life that are draining you and removes them.", "inner transformation": "Healing feelings of unworthiness, restoring a sense of spiritual fullness.", "benefit": "Eradication of debt and restoration of physical vitality.", "number of times to recite": "27 times daily"},
+{"instruction": "Suggest a verse for victory in a massive 'ocean-like' struggle or legal case.", "input": "The problems I am facing are as deep and wide as the ocean; I need total victory.", "output": "Verse: 'திரைக்கடலை உடைத்துநிறை புனற்கடிது குடித்(து) உடையும் உடைப்(பு)அடைய அடைத்(து)உதிரம் நிறைத்து விளையாடும்'.", "context": "References the Vel drying up the ocean to find the enemy.", "layman story": "No matter how deep your enemy hides, the Vel drains the ocean to expose them.", "inner transformation": "Exposing and resolving the hidden root causes of external problems.", "benefit": "Success in legal battles and overcoming overwhelming odds.", "number of times to recite": "36 times daily"},
+{"instruction": "Recommend a verse for protection against sudden accidents or planetary ill-effects.", "input": "I am worried about sudden misfortunes or 'bad luck' affecting my progress.", "output": "Verse: 'சூரர்க்கு(ம்)முநி வரர்க்கு(ம்)மக பதிக்கும் விதி தனக்கும் அரி தனக்கும்நரர் தமக்கும் உறும் இடுக்கண்வினை சாடும்'.", "context": "States that the Vel removes the affliction (Idukkan) of all beings.", "layman story": "The Vel acts like a divine shock-absorber, catching you before you fall.", "inner transformation": "Aligning your personal rhythm with the cosmic rhythm to avoid friction.", "benefit": "Relief from Graha Doshas (planetary afflictions) and accidents.", "number of times to recite": "21 times daily"},
+{"instruction": "Which verse is best for physical healing and curing chronic diseases?", "input": "I am suffering from a physical ailment and want my body restored to health.", "output": "Verse: 'சலத்துவவரும் அரக்கர் உடல் கொழுந்துவளர் பெருத்தகுடர் சிவத்த தொடை எனச்சிகையில் விருப்பமொடு சூடும்'.", "context": "Depicts the Vel consuming the roots of disease.", "layman story": "Think of the Vel as a surgeon's scalpel that only removes what is harmful, leaving you stronger.", "inner transformation": "Purifying the Physical and Energy bodies, allowing divine light to regenerate cells.", "benefit": "Recovery from illness and removal of physical pain.", "number of times to recite": "108 times (for critical health issues)"}]
+
+def upload_verse(verses: list) -> str:
+    """Uploads a verse to the MongoDB collection.
+
+    Args:
+        verses: A dictionary containing verse data
+
+    Returns:
+        A string message indicating success or failure.
+    """
+    try:
+        result = collection.insert_many(verses)
+        return f"Verses uploaded successfully with IDs: {result.inserted_ids}"
+    except Exception as e:
+        return f"An error occurred while uploading the verse: {str(e)}"
+    
+
+if __name__ == "__main__":
+    # read jsonl file and upload to mongodb
+    
+    # For all the fields in the verse document, create a text index to enable text search
+    # index_creation_status = db.lord_muruga.create_index([("$**", TEXT)])
+    # print(f"Text index created: {index_creation_status}")
+    
+
+    with open('hymn_director/data/processed/velmaral_fine_tuning_data.jsonl', 'r') as f:
+        verses = [json.loads(line) for line in f]
+        
+        verses_new = []
+        # split verses: from context and add the context as a separate field in the verse document
+        for verse in verses:
+            verse['vel_verse'] = verse['output'].split("Verse:")[-1].strip()
+            verses_new.append(verse)
+        
+        # merge the old_data with the new verses based on the instruction field         
+        verses = []
+        merged_verse = [dict_a | dict_b for dict_a, dict_b in zip(verses_new, old_data)]
+        print(upload_verse(merged_verse))
