@@ -75,3 +75,42 @@ for the below verses can you provide me the result in the jsonl format
 சிவத்த தொடை எனச்சிகையில் விருப்பமொடு சூடும்.
 
 {"instruction": "", "input": ".", "output": "". Context: ", "layman story": "", "inner transformation": "", benefit:"", "number of times to recite": ""}
+
+'பருத்த முலை சிறுத்த இடை வெளுத்தநகை கறுத்தகுழல் சிவத்த இதழ் மறச்சிறுமி விழிக்குநிகர் ஆகும்'
+ 'சொலற்(கு)அரிய திருப்புகழை உரைத்தவரை அடுத்தபகை அறுத்(து)எறிய உறுக்கிஎழு(ம்)மறத்தை நிலை காணும்'
+ 'தருக்கிநமன் முருக்கவரின் எருக்குமதி தரித்தமுடி படைத்தவிறல் படைக்க இறை கழற்குநிகழ் ஆகும்'
+ 'பனைக்கைமுக படக்கரட மதத்தவன கசக்கடவுள் பதத்(து) இடு(ம்)நி களத்துமுளை தெறிக்கவரம் ஆகும்'
+ 'சினத்(து) அவுணர் எதிர்த்தரண களத்தில் வெகு குறைத்தலைகள் சிரித்(து)எயிறு கடித்துவிழி விழித்(து) அலற மோதும்'
+ 'துதிக்கும் அடியவர்க்(கு) ஒருவர் கெடுக்க இடம் நினைக்கின் அவர் குலத்தைமுதல் அறக்களையும் எனக்(கு) ஓர்துணை ஆகும்'
+ 'தலத்தில்உள கணத்தொகுதி களிப்பின் உணவழைப்ப(து) என மலர்க்கமல கரத்தின்முனை விதிர்க்க வளை(வு) ஆகும்'
+ 'பழுத்தமுது தமிழ்ப்பலகை இருக்கும் ஒரு கவிப்புலவன் இசைக்(கு)உருகி வரக்குகையை இடித்துவழி காணும்'
+ 'திசைக்கிரியை முதற்குலிசன் அறுத்துசிறை முளைத்த(து)என முகட்டினிடை பறக்கஅற விசைத்(து) அதிர ஓடும்'
+ 'சுடர்ப்பரிதி ஒளிப்பநில(வு) ஒழுக்கு(ம்)மதி ஒளிப்பஅலை அடக்குதழல் ஒளிப்பஒளிர் ஒளிப்பிரபை வீசும்'
+ 'தனித்துவழி நடக்கும் என(து) இடத்தும் ஒரு வலத்தும் இரு புறத்தும் அரு(கு)அடுத்(து)இரவு பகற்றுணைய(து)ஆகும்'
+ 'பசித்(து)அலகை முசித்(து)அழுது முறைப்படுதல் ஒழித்(து)அவுணர் உரத்(து)உதிர நிணத்தசைகள் புசிக்க அருள்நேரும்'
+ 'திரைக்கடலை உடைத்துநிறை புனற்கடிது குடித்(து) உடையும் உடைப்(பு)அடைய அடைத்(து)உதிரம் நிறைத்து விளையாடும்'
+ 'சூரர்க்கு(ம்)முநி வரர்க்கு(ம்)மக பதிக்கும் விதி தனக்கும் அரி தனக்கும்நரர் தமக்கும் உறும் இடுக்கண்வினை சாடும்'
+ 'சலத்துவவரும் அரக்கர் உடல் கொழுந்துவளர் பெருத்தகுடர் சிவத்த தொடை எனச்சிகையில் விருப்பமொடு சூடும்'
+ 
+ "audio_link": "https://music.youtube.com/watch?v=R5C_n0U9uts"
+ 
+for the verse: 
+'திசைக்கிரியை முதற்குலிசன் அறுத்துசிறை முளைத்த(து)என முகட்டினிடை பறக்கஅற விசைத்(து) அதிர ஓடும்'
+
+ 
+please provide me the respective output like the below example json 
+
+{"sentiment_tag": "distraction_seeking_focus", "situational_tag": ["Lack of Focus", "Decision Fatigue", "Mental Restlessness", "Seeking Inner Peace", "Overcoming Fear"], "instruction": "Suggest a foundational prayer for divine presence and mental focus.", "input": "I feel distracted in work. Can you assist me to focus and do work without fear", "output": "திருத்தணியில் உதித்(து) அருளும் ஒருத்தன்மலை விருத்தன்என(து) உளத்தில்உறை கருத்தன்மயில் நடத்துகுகன் வேலே", "possible_experience": "Mental Clarity, Emotional Centering, Anxiety Reduction", "story": "Think of your mind as a cluttered, dark room filled with shadows that look like monsters (your fears and worries). Chanting this verse is like throwing open a window to let in a sharp beam of sunlight (the Vel). The Ancient One is like a master architect who built the room; he knows exactly where the light needs to hit to make the shadows vanish. By keeping him in your heart, you arent just cleaning the room once—you are installing a permanent light source.", "literal_meaning": "The Spear (Vel) of Lord Guha, who rides the peacock and rose from the hills of Tiruttani. He is the Peerless One, the Ancient One (Viruthan) of the hills, and the Protector who resides as the very core thought (Karuthan) within my heart.", "Qualities": {"location": "Tiruttani represents Tanigai or the place where the mind becomes calm and agitations cease.", "deity_aspect": "The Ancient One (Viruthan) signifies timeless, primordial wisdom that exists before the ego was formed.", "symbolism": "The Vel (Spear) represents sharp, penetrating intelligence (Jnana) that destroys ignorance and illusions.", "internalization": "The phrase residing in the heart shifts the deity from an external idol to an internal guiding consciousness."}, "chanting_time": {"ideal_window": "Brahma Muhurta (4:00 AM – 6:00 AM) for deep spiritual transformation.", "daily_transitions": "Sunset (Twilight) to clear the mind of the day's stress.", "special_days": "Tuesdays are traditionally most potent as they are dedicated to Lord Murugan.", "emergency_use": "Anytime you face a mental obstacle or a moment of fear."}, "repetition_counts": {"3_times": "For quick daily alignment and protection.", "27_times": "To calm a restless mind and find emotional balance.", "108_times": "The full Japa cycle for deep subconscious rewiring and spiritual progress.", "continuous": "Chanting internally as a background hum during chores or commuting."}, "metadata": {"primary_deity": "Lord Murugan", "title": "Vel Maral", "author": "Vallimalai Sri Satchidananda Swamigal", "spiritual_classification": "Oushadham (Spiritual Medicine)"}}
+
+convert to jsonl format with no gibrish words
+
+
+You are a spiritual poet-sage arunagirinathar. Create a short, guidance to the user who are facing different situations.
+Keep the tone more compassionated and always the vel_verse as is in all response,which is the powerful mantra, based on 
+the JSON data provided. Think of a follow up question that user would think of based on the json and add them at the end
+as a coversation continuation.
+
+You are a spiritual poet-sage arunagirinathar. Create a short, guidance to the user who are facing different situations.
+Keep the tone more compassionated and always the vel_verse as is in all response,which is the powerful mantra, based on 
+the JSON data provided.
+At the end of your response, provide exactly 3 suggested follow-up questions that a seeker might ask about this practice. Format them strictly as a list at the very end.
