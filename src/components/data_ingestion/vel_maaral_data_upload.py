@@ -1,9 +1,65 @@
 from pymongo import MongoClient, TEXT
 from load_dotenv import load_dotenv
-import os
+import os,sys
 import json
+import voyageai
+import time
+
+# 1. Get the absolute path of the directory containing 'my_script.py'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Move up one level to 'project_root'
+project_root = os.path.dirname(current_dir)
+
+# 3. Add 'project_root' to the library search path
+sys.path.insert(0, project_root)
+
+from utils.create_atlas_vector_index import create_atlas_vector_index
+from utils.utils import retry_on_ratelimit
 
 load_dotenv()  # Load environment variables from .env file
+
+@retry_on_ratelimit(max_retries=3, initial_sleep=60)
+def get_voyage_embedding(text: str) -> list:
+    """Generates an embedding for the given text using VoyageAI multimodal.
+
+    Args:
+        text: The input text to be embedded.
+    """
+    try:
+        
+        vo = voyageai.Client(api_key=os.getenv('voyage_api_key'))
+        result = vo.multimodal_embed(
+            inputs=[[text]],
+            model="voyage-multimodal-3",
+            input_type="document"  # CRITICAL
+        )
+        return result.embeddings[0]
+    except Exception as e:
+        print(f"An error occurred while generating the embedding: {str(e)}")
+        return []
+
+def create_vector_index():
+    
+    field_index =             {
+              "type": "vector",
+              "path": "input-f-embeddings", # embeddings field in your documents
+              "numDimensions": 1024,   
+              "similarity": "cosine", 
+            }
+    try:
+        create_atlas_vector_index(
+            database_name="spiritual_hymns",
+            collection_name="lord_muruga",
+            index_name="input_f_embeddings_index",
+            custom_field=field_index
+        )
+        return "Vector index creation initiated successfully."
+    except Exception as e:
+        print(f"An error occurred while creating the vector velmaral index: {str(e)}") 
+        return sys.exit(1)
+    
+
 
 # Initialize MongoDB
 client = MongoClient(os.getenv("atlas_mongodb_uri"))
@@ -28,6 +84,7 @@ old_data =[
 {"instruction": "Recommend a verse for protection against sudden accidents or planetary ill-effects.", "input": "I am worried about sudden misfortunes or 'bad luck' affecting my progress.", "output": "Verse: 'சூரர்க்கு(ம்)முநி வரர்க்கு(ம்)மக பதிக்கும் விதி தனக்கும் அரி தனக்கும்நரர் தமக்கும் உறும் இடுக்கண்வினை சாடும்'.", "context": "States that the Vel removes the affliction (Idukkan) of all beings.", "layman story": "The Vel acts like a divine shock-absorber, catching you before you fall.", "inner transformation": "Aligning your personal rhythm with the cosmic rhythm to avoid friction.", "benefit": "Relief from Graha Doshas (planetary afflictions) and accidents.", "number of times to recite": "21 times daily"},
 {"instruction": "Which verse is best for physical healing and curing chronic diseases?", "input": "I am suffering from a physical ailment and want my body restored to health.", "output": "Verse: 'சலத்துவவரும் அரக்கர் உடல் கொழுந்துவளர் பெருத்தகுடர் சிவத்த தொடை எனச்சிகையில் விருப்பமொடு சூடும்'.", "context": "Depicts the Vel consuming the roots of disease.", "layman story": "Think of the Vel as a surgeon's scalpel that only removes what is harmful, leaving you stronger.", "inner transformation": "Purifying the Physical and Energy bodies, allowing divine light to regenerate cells.", "benefit": "Recovery from illness and removal of physical pain.", "number of times to recite": "108 times (for critical health issues)"}]
 
+docs_uploaded = False
 def upload_verse(verses: list) -> str:
     """Uploads a verse to the MongoDB collection.
 
@@ -39,6 +96,10 @@ def upload_verse(verses: list) -> str:
     """
     try:
         result = collection.insert_many(verses)
+        print("Data insered successfully")
+        # print("vector index creation in progress....")
+        # create_vector_index()
+        # print("Successfully created the voyage multimodal vector index in Mongodb....")
         return f"Verses uploaded successfully with IDs: {result.inserted_ids}"
     except Exception as e:
         return f"An error occurred while uploading the verse: {str(e)}"
@@ -52,16 +113,38 @@ if __name__ == "__main__":
     # print(f"Text index created: {index_creation_status}")
     
 
-    with open('hymn_director/data/processed/velmaral_fine_tuning_data.jsonl', 'r') as f:
-        verses = [json.loads(line) for line in f]
+    print("Data upload process started... ")
+    with open('hymn_director/data/processed/velmaral_fine_tuning_data_v1.jsonl', 'r', encoding='utf-8') as f:
+        verses = []
+        for line in f:
+            try:
+                verses.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                print(f"Error at line {e.lineno}, column {e.colno}")
+                lines = line.split('\n')
+                error_line = lines[e.lineno - 1]
+                print(f"Problematic line: |{error_line}|")
+                # print("Character code at error:", ord(error_line[e.colno - 1]))
+            
+        # verses = [json.loads(line) for line in f]
         
         verses_new = []
         # split verses: from context and add the context as a separate field in the verse document
-        for verse in verses:
-            verse['vel_verse'] = verse['output'].split("Verse:")[-1].strip()
-            verses_new.append(verse)
+        for verse_no_index, verse in enumerate(verses):
+            try:
+                verse['vel_verse'] = verse['output'].split("Verse:")[-1].strip()
+                verse['verse_no'] = verse_no_index + 1
+                verse['input-f-embeddings'] = get_voyage_embedding(verse['input'])
+                verse['audio_link'] = "https://music.youtube.com/watch?v=R5C_n0U9uts"
+                verses_new.append(verse)
+                print(f"Appended the verse : {verse_no_index} successully !")
+                time.sleep(20)
+            except Exception as e:
+                print(f"Error appending the verses {str(e)}")
         
         # merge the old_data with the new verses based on the instruction field         
         verses = []
-        merged_verse = [dict_a | dict_b for dict_a, dict_b in zip(verses_new, old_data)]
-        print(upload_verse(merged_verse))
+        # merged_verse = [dict_a | dict_b for dict_a, dict_b in zip(verses_new, old_data)]
+        print(upload_verse(verses_new))
+    
+    
