@@ -41,8 +41,8 @@ class SpiritualEngine:
         #     "Classification:"
         # )
         
-        classifier_prompt = (f"""
-        You are an expert text classification AI. Your task is to classify an input sentence into one of two categories: "Situation" or "General".
+        user_sentence = state["messages"][-1].content
+        classifier_prompt = (f"""You are an expert text classification AI. Your task is to classify an input sentence into one of two categories: "Situation" or "General".
 
         ### Definitions:
         1. Situation: The sentence describes a specific, time-bound event, personal experience, immediate context, or localized occurrence. It often uses specific pronouns (I, we, they), past/present progressive tenses, or references a particular moment.
@@ -55,23 +55,24 @@ class SpiritualEngine:
 
         ### Examples:
         Input: "I am stuck in heavy traffic on my way to the office right now."
-        Output: {"category": "Situation", "reasoning": "Describes a specific, ongoing personal event happening in the present moment."}
+        Output: "situation"
 
         Input: "Traffic congestion usually increases during rush hour in major cities."
-        Output: {"category": "General", "reasoning": "States a broad, recurring fact rather than a specific event."}
+        Output: "general"
 
         Input: "Water boils at 100 degrees Celsius."
-        Output: {"category": "General", "reasoning": "States a universal scientific fact."}
+        Output: "general"
 
         Input: "The kitchen pipe burst and water is leaking everywhere."
-        Output: {"category": "Situation", "reasoning": "Refers to a localized, immediate incident requiring attention."}
-
+        Output: "situation"
+        
         ### Input Sentence:
-        "{state["messages"][-1].content}"
+        "{user_sentence}"
 
         ### Output:
-
-        """)
+        """
+        
+        )
         
         # Step 2: Run the quick classification pass
         try:
@@ -87,14 +88,9 @@ class SpiritualEngine:
         # Step 3: Choose the model based on the classification result
         # We check if 'SITUATION' is in the response to account for stray punctuation
         if "SITUATION" in category:
-            chosen_model = 'llama3.2:3b'  # Use a smarter model for complex situations
-            return  {
-                "route": "situation"            }
+            return {"route": "situation"}
         else:
-            chosen_model = 'phi4:mini'     # Use a faster, lighter model for general talk
-            return {
-            "route": "general"
-        }
+            return {"route": "general"}
 
     @traceable
     def _route_after_model(self, state):
