@@ -16,7 +16,7 @@ engine = get_engine()
 
     
 if "thread_id" not in st.session_state:
-    st.session_state.thread_id = "sp_user_001"
+    st.session_state.thread_id = "sp_user_006"
 
 # ==========================================
 # 3. GREETING POPUP
@@ -34,26 +34,36 @@ if 'greeted' not in st.session_state:
 # 2. Synchronize past chat loops seamlessly 
 history = engine.get_history(st.session_state.thread_id)
 for msg in history:
+    if "The JSON object must contain exactly these 8 keys:" in msg.content or \
+    "Respond in a calm, compassionate tone." in msg.content or "You are Spiritual Guru, a compassionate spiritual guide" in msg.content:
+        continue  # Skip rendering this message
     role = "user" if msg.type == "human" else "assistant"
     with st.chat_message(role):
         if role == "user":
+            print("User message:", msg.content, type(msg.content))  # Debug print to check the content format
             st.markdown(msg.content)
         else:
             # Render your structural JSON keys exactly as before
             try:
-                response_dict = json.loads(msg.content)
-                for key, value in response_dict.items():
-                    display_key = key.replace("_", " ").capitalize()
-                    
-                    if isinstance(value, dict):
-                        st.markdown(f"### {display_key}")
-                        for sub_key, sub_value in value.items():
-                            if str(sub_value).strip():
-                                st.markdown(f"**{sub_key.replace('_', ' ').capitalize()}:** {sub_value}")
+                if "{" not in msg.content and "}" not in msg.content:
+                    print("msg.content:", msg.content, type(msg.content))  # Debug print to check the content format
+                    st.markdown(msg.content)
+                
+                if "{" in msg.content and "}" in msg.content:
+                    response_dict = json.loads(msg.content)
+                    for key, value in response_dict.items():
+                        display_key = key.replace("_", " ").capitalize()
+                        
+                        if isinstance(value, dict):
+                            st.markdown(f"### {display_key}")
+                            for sub_key, sub_value in value.items():
+                                if str(sub_value).strip():
+                                    st.markdown(f"**{sub_key.replace('_', ' ').capitalize()}:** {sub_value}")
 
-                    else:
-                        if str(value).strip():
-                            st.markdown(f"**{display_key}:** {value}")
+                        else:
+                            if str(value).strip():
+                                st.markdown(f"**{display_key}:** {value}")
+                # st.markdown(msg.content)
 
             except Exception:
                 # Fallback rendering if it's raw text
