@@ -59,7 +59,7 @@ class SpiritualEngine:
         # )
         
         user_sentence = state["messages"][-1].content
-        classifier_prompt = (f"""You are an expert text classification AI. Your task is to classify the user's message into one category:
+        classifier_prompt_v3 = (f"""You are an expert text classification AI. Your task is to classify the user's message into one category:
 
             - casual_chat
             - spiritual_guidance
@@ -100,6 +100,48 @@ class SpiritualEngine:
         Return only the category name.
         """
         )
+        
+        classifier_prompt = f""" You are an expert intent classification system.
+
+        Task:
+        Analyze the user's input and classify it into exactly one of the following categories:
+
+        1. casual_chat
+
+        * Greetings, small talk, jokes, compliments, general conversation.
+        * Questions seeking information without expressing a personal problem.
+        * Examples:
+
+            * "Hi, how are you?"
+            * "Tell me a joke."
+            * "What's the capital of France?"
+            * "I love watching movies."
+
+        2. life_problem
+
+        * The user expresses a personal difficulty, challenge, concern, distress, conflict, frustration, uncertainty, or situation where they may need guidance, support, advice, or problem-solving.
+        * Includes emotional, relationship, family, career, financial, academic, health, social, or existential struggles.
+        * Examples:
+
+            * "I'm feeling lonely lately."
+            * "I lost my job and don't know what to do."
+            * "My parents don't support my career choice."
+            * "I'm stressed about my exams."
+
+        Instructions:
+
+        * Focus on the user's underlying intent, not just keywords.
+        * If the user describes a personal challenge, concern, or negative situation, classify as LIFE_PROBLEM.
+        * If the user is simply chatting, asking factual questions, or making neutral statements, classify as CASUAL_CHAT.
+        * When uncertain, prefer LIFE_PROBLEM if there is any indication of a personal issue requiring support or guidance.
+
+        ### Input Sentence:
+        "{user_sentence}"
+
+        Return only the category name.
+
+        
+        """
         
         # Step 2: Run the quick classification pass
         try:
@@ -278,9 +320,9 @@ class SpiritualEngine:
         chat_messages = [system_message] + chat_history
         try:
             # 3. Prompt the local Ollama model
+            # tools=[self.search_temple],
             response = ollama.chat(model='vel-maaral-s1-v4:latest', 
                                 messages=chat_messages,
-                                tools=[self.search_temple],
                 options={
                 'temperature': 0.1,       # Makes it less "robotic"
                 'repeat_penalty': 1.2,    # Stops it from saying "I am an AI" repeatedly
@@ -293,39 +335,39 @@ class SpiritualEngine:
             
         try:
             
-            # FIX 3: Dynamic Hand-off to LangGraph's tools_condition
-            # Ollama returns tool calls in 'tool_calls' inside the message dictionary if it triggers one
-            message_obj = response.get('message', {})
-            tool_calls = message_obj.get('tool_calls', [])
-            content = message_obj.get('content', '')
+            # # FIX 3: Dynamic Hand-off to LangGraph's tools_condition
+            # # Ollama returns tool calls in 'tool_calls' inside the message dictionary if it triggers one
+            # message_obj = response.get('message', {})
+            # tool_calls = message_obj.get('tool_calls', [])
+            # content = message_obj.get('content', '')
 
-            # Create a true LangChain/LangGraph compatible message state update
-            ai_message = AIMessage(
-                content=content,
-                tool_calls=tool_calls
-            )
-            # vel_guidance = Velmantra.model_validate_json(response.message.content)    
+            # # Create a true LangChain/LangGraph compatible message state update
+            # ai_message = AIMessage(
+            #     content=content,
+            #     tool_calls=tool_calls
+            # )
+            # # vel_guidance = Velmantra.model_validate_json(response.message.content)    
             
-            # Process structured guidance ONLY if the model didn't decide to call a tool instead
-            structured_response = None
-            if not tool_calls and content:
-                try:
-                    structured_response = json.loads(content)
-                    print("Structured guidance parsed successfully:", structured_response)
-                except Exception as e:
-                    print(f"Error loading llm response to json: {str(e)}")
+            # # Process structured guidance ONLY if the model didn't decide to call a tool instead
+            # structured_response = None
+            # if not tool_calls and content:
+            #     try:
+            #         structured_response = json.loads(content)
+            #         print("Structured guidance parsed successfully:", structured_response)
+            #     except Exception as e:
+            #         print(f"Error loading llm response to json: {str(e)}")
 
-            return {
-                "messages": [ai_message],  # LangGraph tools_condition inspects this exact object for tool_calls!
-                "structured_guidance": structured_response
-            }
-    
-            # content = response['message']['content']
-            # structured_response = json.loads(content)
             # return {
-            #     "messages": [{"role": "assistant", "content": content}],
+            #     "messages": [ai_message],  # LangGraph tools_condition inspects this exact object for tool_calls!
             #     "structured_guidance": structured_response
             # }
+    
+            content = response['message']['content']
+            structured_response = json.loads(content)
+            return {
+                "messages": [{"role": "assistant", "content": content}],
+                "structured_guidance": structured_response
+            }
         except Exception as e:
             print(f"Error loading llm response to json {str(e)}")
             # to do: add a generic response
@@ -358,12 +400,12 @@ class SpiritualEngine:
         workflow.add_edge("general_talk", END) 
         workflow.add_edge("search", "guide")
         # 4. Bind conditional tool logic
-        workflow.add_conditional_edges(
-            "guide", 
-            tools_condition  # Routes to "tools" if LLM requests a tool call, else routes to END
-        )
-        workflow.add_edge("tools", "guide")
-        # workflow.add_edge("guide", END)
+        # workflow.add_conditional_edges(
+        #     "guide", 
+        #     tools_condition  # Routes to "tools" if LLM requests a tool call, else routes to END
+        # )
+        # workflow.add_edge("guide", "tools")
+        workflow.add_edge("guide", END)
         return workflow.compile(checkpointer=self.checkpointer)
 
     @traceable
